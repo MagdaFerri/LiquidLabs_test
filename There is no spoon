@@ -1,0 +1,53 @@
+import sys
+import math
+
+
+width = int(input())  # the number of cells on the X axis
+height = int(input())  # the number of cells on the Y axis
+
+node_list = []
+
+for i in range(height):
+    line = input()  # width characters, each either 0 or .
+    x=0
+    for ch in line:
+      if ch=='0':
+        node_list.append({'x':x,'y':i})
+      x+=1  
+
+
+#find neighbours
+for node in node_list:
+
+  xn = node['x']
+  yn = node['y']
+  right_n = {}
+  down_n = {}
+  
+  #find right neighbour:
+  right_n_list= list(filter(lambda node: node['y']==yn,list(filter(lambda node: node['x']>xn, node_list))))
+  
+  if right_n_list == []:
+    right_n = {'x':-1, 'y':-1}
+  else:
+    right_n = {'x' :min(map(lambda k: k['x'] ,right_n_list)), 'y':yn}
+    
+    
+  #find down neighbour:
+  down_n_list= list(filter(lambda node: node['y']>yn,list(filter(lambda node: node['x']==xn, node_list))))
+  if down_n_list == []:
+    down_n = {'x':-1, 'y':-1}
+  else:
+    down_n = {'x' :xn, 'y': min(map(lambda k: k['y'] ,down_n_list))}
+    
+  print ('{0} {1} {2} {3} {4} {5}' .format(xn, yn, right_n['x'], right_n['y'], down_n['x'],down_n['y']))
+  
+  
+  #####################################################################################################################
+  # to notice: the script was running also without forcing the neighbour to be the first one (min(map(lambda k: k['y'] ,down_n_list))),
+  # but simply taking the first result of the list (down_n_list[0]) due to the natural inner sorting of the list. 
+  # Still, although that meant more and less elegant code, I preferred to 
+  # force the neighbour to be the one with the min x (or y) in order to have a more stable script.
+  #####################################################################################################################
+  
+  
