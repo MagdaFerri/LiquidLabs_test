@@ -45,7 +45,7 @@ for node in node_list:
   
   #####################################################################################################################
   # to notice: the script was running also without forcing the neighbour to be the first one (min(map(lambda k: k['y'] ,down_n_list))),
-  # but simply taking the first result of the list (down_n_list[0]) due to the natural inner sorting of the list. 
+  # by simply taking the first result of the list (down_n_list[0]) due to the natural inner sorting of the list. 
   # Still, although that meant more and less elegant code, I preferred to 
   # force the neighbour to be the one with the min x (or y) in order to have a more stable script.
   #####################################################################################################################
