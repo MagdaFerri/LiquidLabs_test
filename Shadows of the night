@@ -1,0 +1,71 @@
+//JavaScript-C24.2.0 (SpiderMonkey)
+
+
+
+var inputs = readline().split(' ');
+var W = parseInt(inputs[0]); // width of the building.
+var H = parseInt(inputs[1]); // height of the building.
+var N = parseInt(readline()); // maximum number of turns before game over.
+var inputs = readline().split(' ');
+var X0 = parseInt(inputs[0]);
+var Y0 = parseInt(inputs[1]);
+
+var Xmin = 0;
+var Xmax = W-1;
+var Ymin = 0;
+var Ymax = H-1;
+var dir_1 = '';
+var dir_2 ='';
+var dir_index;
+
+function find_new_restrictions(bombDir)
+{
+    dir_index = 0;
+        dir_1 = bombDir[dir_index];
+        
+        if (dir_1 == 'U')
+        {
+            Ymax = Math.max(Y0-1, Ymin);
+            dir_index++;
+        }
+        if (dir_1 == 'D')
+        {
+            Ymin = Math.min(Y0+1, Ymax);
+            dir_index++;
+        }
+        
+        if (bombDir[dir_index] != null)
+        {
+            if (bombDir[dir_index] == 'R')
+            {
+                Xmin = Math.min(X0 + 1, Xmax);
+            }
+            else if (bombDir[dir_index] == 'L')
+            {
+                Xmax = Math.max(X0 - 1, Xmin);
+            }
+        }
+        
+}
+
+function jump(X_min, X_max, Y_min, Y_max)
+{
+    X0 = Math.max( Math.min(Math.ceil((X_min + X_max)/2), X_max), X_min);
+    Y0 = Math.max( Math.min(Math.ceil((Y_min + Y_max)/2), Y_max), Y_min);
+}
+
+
+// game loop
+while (true) {
+    var bombDir = readline(); // the direction of the bombs from batman's current location (U, UR, R, DR, D, DL, L or UL)
+    if (bombDir !== null)
+    {
+        find_new_restrictions(bombDir);
+        
+        
+        jump(Xmin, Xmax, Ymin, Ymax);
+        print(X0,Y0);
+    }
+    // the location of the next window Batman should jump to.
+    
+}
