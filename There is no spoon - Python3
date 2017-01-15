@@ -25,6 +25,9 @@ for node in node_list:
   down_n = {}
   
   #find right neighbour:
+  #the right neighbour has the same y value and a bigger x value.
+  #since I want just one neighbour, the closest one, I take the node with the minimum x value
+  
   right_n_list= list(filter(lambda node: node['y']==yn,list(filter(lambda node: node['x']>xn, node_list))))
   
   if right_n_list == []:
@@ -34,6 +37,9 @@ for node in node_list:
     
     
   #find down neighbour:
+  #the down neighbour has the same x value and a bigger y value.
+  #since I want just one neighbour, the closest one, I take the node with the minimum y value
+  
   down_n_list= list(filter(lambda node: node['y']>yn,list(filter(lambda node: node['x']==xn, node_list))))
   if down_n_list == []:
     down_n = {'x':-1, 'y':-1}
