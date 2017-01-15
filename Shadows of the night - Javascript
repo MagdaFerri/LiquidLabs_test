@@ -1,18 +1,41 @@
-var inputs = readline().split(' ');
-var W = parseInt(inputs[0]); // width of the building.
-var H = parseInt(inputs[1]); // height of the building.
-var N = parseInt(readline()); // maximum number of turns before game over.
-var inputs = readline().split(' ');
-var X0_start = parseInt(inputs[0]);
-var Y0_start = parseInt(inputs[1]);
 
-var X0 = X0_start;
-var Y0 = Y0_start;
-var Xmin = 0;
-var Xmax = W-1;
-var Ymin = 0;
-var Ymax = H-1;
-var restr_area;
+function check_initial_input(w,h,n,X0_start, Y0_start)
+{
+    var check = true;
+    var error_message = "";
+    
+    if (w < 1 | w > 10000 | h <1 | h>10000)
+    {
+        check=false;
+        error_message = "The building measures don't respect the constraints.\nConstraints:\n1 ≤ W ≤ 10000\n1 ≤ H ≤ 10000";
+    }
+    
+    if (n < 2 | n > 100)
+    {
+        check=false;
+        error_message = "The max number of possible jumps don't respect the constraints.\nConstraints:\n2 ≤ N ≤ 100";
+    }
+    
+    if (X0_start < 0 | X0_start > w | Y0_start < 0 | Y0_start > h)
+    {
+        check=false;
+        error_message = "The start position is not at all inside the building!";
+    }
+    return {check: check, msg: error_message};
+}
+
+function check_directions(bombDir)
+{
+    var dir_check = true;
+    var possible_directions = ['U','D','UR','UL','DR','DL','R','L'];
+    
+    if(possible_directions.indexOf(bombDir) < 0)
+    {
+        dir_check = false;
+        var error_msg = "This direction doesn't make sense. Please insert a direction among the following: " + possible_directions;    
+    }
+    return {check: dir_check, msg: error_msg};
+}
 
 
 function find_new_restrictions(bombDir, x_min, x_max, y_min, y_max, X0, Y0)
@@ -57,11 +80,57 @@ function jump(X_min, X_max, Y_min, Y_max)
 }
 
 
+
+var check = false;
+
+while(!check)
+{
+    
+    var inputs = readline().split(' ');
+    var W = parseInt(inputs[0]); // width of the building.
+    var H = parseInt(inputs[1]); // height of the building.
+    var N = parseInt(readline()); // maximum number of turns before game over.
+    var inputs = readline().split(' ');
+    var X0_start = parseInt(inputs[0]);
+    var Y0_start = parseInt(inputs[1]);
+
+    var res = check_initial_input(W,H,N,X0,Y0);
+    check = res['check'];
+    if (!check) print(res['msg']);
+}    
+
+
+var X0 = X0_start;
+var Y0 = Y0_start;
+var Xmin = 0;
+var Xmax = W-1;
+var Ymin = 0;
+var Ymax = H-1;
+var restr_area;
+
+
+
 // game loop
 while (true) {
+    
+    var dir_check = false;
+    
+    
     var bombDir = readline(); // the direction of the bombs from batman's current location (U, UR, R, DR, D, DL, L or UL)
+     
     if (bombDir !== null)
     {
+        //check that the given directions are valid
+        var res = check_directions(bombDir);
+        dir_check = res['check'];
+        error_msg = res['msg'];
+        if (!dir_check) 
+        {
+            print(error_msg);
+            break;
+        }
+        
+        
         restr_area = find_new_restrictions(bombDir, Xmin, Xmax, Ymin, Ymax, X0, Y0);
         
         Xmin = restr_area['xmin'];
