@@ -3,54 +3,57 @@ var W = parseInt(inputs[0]); // width of the building.
 var H = parseInt(inputs[1]); // height of the building.
 var N = parseInt(readline()); // maximum number of turns before game over.
 var inputs = readline().split(' ');
-var X0 = parseInt(inputs[0]);
-var Y0 = parseInt(inputs[1]);
+var X0_start = parseInt(inputs[0]);
+var Y0_start = parseInt(inputs[1]);
 
+var X0 = X0_start;
+var Y0 = Y0_start;
 var Xmin = 0;
 var Xmax = W-1;
 var Ymin = 0;
 var Ymax = H-1;
-var dir_1 = '';
-var dir_2 ='';
-var dir_index;
+var restr_area;
 
-function find_new_restrictions(bombDir)
+
+function find_new_restrictions(bombDir, x_min, x_max, y_min, y_max, X0, Y0)
 {
-        dir_index = 0;
-        dir_1 = bombDir[dir_index];
-        
-        
+    // this function restricts the aerea where the bomb could be
+               
         // U and D can appear just as first direction letter
-        if (dir_1 == 'U')
+        if (bombDir.startsWith('U'))
         {
-            Ymax = Math.max(Y0-1, Ymin);
-            dir_index++;
+            y_max = Math.max(Y0-1, y_min);
         }
-        if (dir_1 == 'D')
+        else if (bombDir.startsWith('D'))
         {
-            Ymin = Math.min(Y0+1, Ymax);
-            dir_index++;
+            y_min = Math.min(Y0+1, y_max);
         }
         
-        // either I get R and L as second direction letter, or I get them as first and unique direction letter
-        if (bombDir[dir_index] != null)
+        // R and L can appear just at the end of the direction string
+
+        if (bombDir.endsWith('R'))
         {
-            if (bombDir[dir_index] == 'R')
-            {
-                Xmin = Math.min(X0 + 1, Xmax);
-            }
-            else if (bombDir[dir_index] == 'L')
-            {
-                Xmax = Math.max(X0 - 1, Xmin);
-            }
+            x_min = Math.min(X0 + 1, x_max);
         }
-        
+        else if (bombDir.endsWith('L'))
+        {
+            x_max = Math.max(X0 - 1, x_min);
+        }
+    
+    return {xmin:x_min, xmax:x_max, ymin:y_min, ymax:y_max};
+
+
 }
 
 function jump(X_min, X_max, Y_min, Y_max)
 {
-    X0 = Math.max( Math.min(Math.ceil((X_min + X_max)/2), X_max), X_min);
-    Y0 = Math.max( Math.min(Math.ceil((Y_min + Y_max)/2), Y_max), Y_min);
+    // in order to make every time stronger restrictions, Batman will jump not just one cell 
+    // in the specified direction, but in the middle of the restricted aerea
+    
+    var x_new = Math.max( Math.min(Math.ceil((X_min + X_max)/2), X_max), X_min);
+    var y_new = Math.max( Math.min(Math.ceil((Y_min + Y_max)/2), Y_max), Y_min);
+    
+    return {x: x_new, y: y_new};
 }
 
 
@@ -59,11 +62,63 @@ while (true) {
     var bombDir = readline(); // the direction of the bombs from batman's current location (U, UR, R, DR, D, DL, L or UL)
     if (bombDir !== null)
     {
-        find_new_restrictions(bombDir);   
-        jump(Xmin, Xmax, Ymin, Ymax);
+        restr_area = find_new_restrictions(bombDir, Xmin, Xmax, Ymin, Ymax, X0, Y0);
+        
+        Xmin = restr_area['xmin'];
+        Xmax = restr_area['xmax'];
+        Ymin = restr_area['ymin'];
+        Ymax = restr_area['ymax'];
+        
+        var new_pos = jump(Xmin, Xmax, Ymin, Ymax);
+        
+        X0 = new_pos['x'];
+        Y0 = new_pos['y'];
         
         // new location:
         print(X0,Y0);
-    }
-    
+    }    
 }
+
+// to notice: I could insert a more complete end, by giving a real guess about where the bomb is and 
+// by inserting a check with the max number of jumps, a variable that I didn't use at all in the code. 
+// This is though not part of the problem requirements, so I didn't insert it.
+
+// here is how I would end it:
+
+/*
+while (true) {
+    var bombDir = readline(); // the direction of the bombs from batman's current location (U, UR, R, DR, D, DL, L or UL)
+    var count_jumps = 0;
+    if (bombDir !== null)
+    {
+        restr_area = find_new_restrictions(bombDir, Xmin, Xmax, Ymin, Ymax, X0, Y0);
+        
+        Xmin = restr_area['xmin'];
+        Xmax = restr_area['xmax'];
+        Ymin = restr_area['ymin'];
+        Ymax = restr_area['ymax'];
+        
+        var new_pos = jump(Xmin, Xmax, Ymin, Ymax);
+        count_jumps +=1;
+        
+        X0 = new_pos['x'];
+        Y0 = new_pos['y'];
+        
+        // new location:
+        print(X0,Y0);
+        
+        if (Xmin == Xmax & Ymin == Ymax)
+        {
+            print('found the bomb!!!');
+            break;
+        }
+        else if (count_jumps >= N)
+        {
+            print('oh no! I jumped too much around!');
+            break;
+        }
+        
+    }    
+}
+print('the end');
+*/
