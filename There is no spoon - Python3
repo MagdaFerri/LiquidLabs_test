@@ -1,19 +1,39 @@
 import sys
 import math
 
+check = True
+while check:
+  width = int(input())  # the number of cells on the X axis
+  height = int(input())  # the number of cells on the Y axis
 
-width = int(input())  # the number of cells on the X axis
-height = int(input())  # the number of cells on the Y axis
+
+  if width<=0 or width>30 or height<=0 or height>30:
+    print('wrong input. Please restrict your node matrix to the following criterias:')
+    print('0 < width ≤ 30')
+    print('0 < height ≤ 30')
+  else:
+    check = False
 
 node_list = []
 
 for i in range(height):
+  
+  check = True
+  while check:
     line = input()  # width characters, each either 0 or .
-    x=0
-    for ch in line:
-      if ch=='0':
-        node_list.append({'x':x,'y':i})
-      x+=1  
+    if len(line) != width:
+      print('The line should have length ',width)
+    else:
+      check = False
+    
+  x=0
+  for ch in line:
+    if ch != '0' and ch != '.':
+      print('wrong entry: ', ch)
+      
+    if ch=='0':
+      node_list.append({'x':x,'y':i})
+    x+=1  
 
 
 #find neighbours
@@ -57,3 +77,4 @@ for node in node_list:
   #####################################################################################################################
   
   
+
