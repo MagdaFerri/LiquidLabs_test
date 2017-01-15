@@ -48,7 +48,7 @@ function find_new_restrictions(bombDir, x_min, x_max, y_min, y_max, X0, Y0)
 function jump(X_min, X_max, Y_min, Y_max)
 {
     // in order to make every time stronger restrictions, Batman will jump not just one cell 
-    // in the specified direction, but in the middle of the restricted aerea
+    // in the specified direction, but in the middle of the restricted area
     
     var x_new = Math.max( Math.min(Math.ceil((X_min + X_max)/2), X_max), X_min);
     var y_new = Math.max( Math.min(Math.ceil((Y_min + Y_max)/2), Y_max), Y_min);
