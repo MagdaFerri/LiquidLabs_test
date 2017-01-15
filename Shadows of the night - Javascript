@@ -17,7 +17,7 @@ var restr_area;
 
 function find_new_restrictions(bombDir, x_min, x_max, y_min, y_max, X0, Y0)
 {
-    // this function restricts the aerea where the bomb could be
+    // this function restricts the area where the bomb could be
                
         // U and D can appear just as first direction letter
         if (bombDir.startsWith('U'))
